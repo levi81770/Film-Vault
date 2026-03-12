@@ -1,0 +1,20 @@
+<%- include('../partials/_navbar.ejs', {title: 'Actors' }) %>
+
+  <body>
+    <h1>All Actors</h1>
+    <div class="actors-container">
+      <% actors.forEach(actor=> { %>
+        <div class="actor-card">
+          <img src="<%= actor.image %>" alt="Actor Image" class="actor-image">
+          <a href="/actors/<%= actor._id %>">
+            <h2>
+              <%= actor.name %>
+            </h2>
+          </a>
+        </div>
+        <% }) %>
+    </div>
+
+  </body>
+
+  </html>

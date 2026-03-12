@@ -1,0 +1,30 @@
+<%- include('./_header.ejs', { title: title }) %>
+  <link rel="stylesheet" href="/stylesheets/partials.css" />
+
+  <nav>
+    <div>
+      <a href="/">Home</a>
+      <% if (!user) { %>
+        <a href="/auth/sign-up">Sign Up</a>
+        <a href="/auth/sign-in">Sign In</a>
+        <% } %>
+
+          <a href="/movies">All Movies</a>
+          <a href="/actors">All Actors</a>
+          
+          <% if(user) { %>
+            <a href="/movies/new">Add a New Movie</a>
+            <a href="/actors/new">Add a New Actor</a>
+            <a href="/auth/sign-out">Sign Out</a>
+            <% } %>
+    </div>
+    <div>
+      <% if(user) { %>
+        <strong id="avatar">
+          <%= user?.username?.charAt(0).toUpperCase() %>
+        </strong>
+        <% } %>
+    </div>
+
+
+  </nav>

@@ -1,0 +1,22 @@
+<%- include('../partials/_navbar.ejs', {title: 'Movies' }) %>
+
+  <body>
+    <h1>All Movies</h1>
+    <div class="movies-container">
+      <% movies.forEach(movie=> { %>
+        <div class="movie-card">
+
+          <a href="/movies/<%= movie._id %>">
+            <h2>
+              <%= movie.title %>
+            </h2>
+          </a>
+
+          <img src="<%= movie.posterUrl %>" alt="Movie Poster" class="movie-poster">
+        </div>
+        <% }) %>
+    </div>
+
+  </body>
+
+  </html>

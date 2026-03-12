@@ -1,0 +1,23 @@
+<%- include('../partials/_navbar.ejs', {title: 'Add New Actor' }) %>
+
+  <body>
+    <h1>Add a New Actor</h1>
+    <form action="/actors" method="POST">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div>
+        <label for="birthYear">Birth Year:</label>
+        <input type="number" id="birthYear" name="birthYear" required>
+      </div>
+      <div>
+        <label for="photoUrl">Image URL:</label>
+        <input type="url" id="photoUrl" name="photoUrl">
+      </div>
+      <input type="submit" value="Add Actor">
+    </form>
+
+  </body>
+
+  </html>

@@ -1,0 +1,40 @@
+<%- include('../partials/_navbar.ejs', {title: actor.name }) %>
+
+  <body>
+    <div>
+      <h1>
+        <%= actor.name %>
+      </h1>
+      <img src="<%= actor.photoUrl %>" alt="<%= actor.name %>" class="actor-photo">
+      <p><strong>Birth Year:</strong>
+        <%= actor.birthYear %>
+      </p>
+      <p><strong>Added By:</strong>
+        <%= addByUser.username %>
+      </p><strong>Movies:</strong>
+        <% if (actor.movies.length > 0) { %>
+          <ul>
+            <% actor.movies.forEach(movie => { %>
+              <a href="/movies/<%= movie._id %>">
+                <li>
+                  <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>" class="movie-poster">
+                  <%= movie.title %>
+                </li>
+              </a>
+              <% }); %>
+          </ul>
+          <% } else { %>
+            <p>No movies information available.</p>
+            <% } %>
+      </p>
+      <% if (user) { %>
+        <form action="/actors/<%= actor._id %>?_method=DELETE" method="POST">
+          <button type="submit">Delete Actor</button>
+        </form>
+        <a href="/actors/<%= actor._id %>/edit">Edit Actor</a>
+        <% } %>
+    </div>
+
+  </body>
+
+  </html>
