@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 const Movie = require('../models/movie');
-const Actor = require('../models/actor');
 const User = require('../models/user');
 
 // ** INDEX - GET - /actors

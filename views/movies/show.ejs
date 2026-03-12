@@ -16,7 +16,7 @@
         <%= addByUser.username %>
       </p>
       <p><strong>Cast:</strong>
-        <% if (movie.cast.length > 0) { %>
+        <% if (movie.cast.length> 0) { %>
           <ul>
             <% movie.cast.forEach(actor=> { %>
               <a href="/actors/<%= actor._id %>">
@@ -37,6 +37,37 @@
         </form>
         <a href="/movies/<%= movie._id %>/edit">Edit Movie</a>
         <% } %>
+    </div>
+    <div>
+      <h2>Reviews:</h2>
+      <% if (user) { %>
+        <form action="/movies/<%= movie._id %>/reviews" method="POST">
+          <textarea name="content" placeholder="Write your review here..." required></textarea>
+          <button type="submit">Add Review</button>
+        </form>
+        <% } else { %>
+          <p><a href="/auth/login">Log in</a> to add a review.</p>
+          <% } %>
+
+            <% if (movie.reviews.length> 0) { %>
+              <% movie.reviews.forEach(review=> { %>
+                <div class="review-card">
+                  <p><strong>Author:</strong>
+                    <%= review.author.username %>
+                  </p>
+                  <p><strong>Content:</strong>
+                    <%= review.content %>
+                  </p>
+                  <% if (user) { %>
+                   <form action="/movies/<%= movie._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                     <button type="submit">Delete Review</button>
+                   </form>
+                  <% } %>
+                </div>
+                <% }) %>
+                  <% } else { %>
+                    <p>No reviews yet. Be the first to review this movie!</p>
+                    <% } %>
     </div>
 
   </body>

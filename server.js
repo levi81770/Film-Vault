@@ -16,6 +16,8 @@ const passDataToView = require('./middleware/passDataToView')
 const authController = require('./controllers/auth.js');
 const moviesController = require('./controllers/movies.js');
 const actorsController = require('./controllers/actors.js');
+const userController = require('./controllers/user.js');
+const reviewsController = require('./controllers/reviews.js');
 
 const port = process.env.PORT ? process.env.PORT : '3000';
 
@@ -49,6 +51,11 @@ app.get('/', (req, res) => {
 app.use('/auth', authController);
 app.use('/movies', moviesController);
 app.use('/actors', actorsController);
+app.use('/reviews', reviewsController);
+
+// Any routes defined under this middleware require auth
+app.use(authRequired)
+app.use('/users', userController);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);

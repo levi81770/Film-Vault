@@ -8,10 +8,13 @@ const User = require('../models/user');
 // ** INDEX - GET - /movies
 // ** NEW - GET - /movies/new
 // ** DELETE - DELETE - /movies/:movieId
+// ** DELETE - DELETE - /movies/:movieId/reviews/:reviewId
 // ** UPDATE - PUT - /movies/:movieId
 // ** CREATE - POST - /movies/
+// ** CREATE - POST - /movies/:movieId/reviews
 // ** EDIT - GET - /movies/:movieId/edit
 // ** SHOW - GET - /movies/:movieId
+
 
 //  INDEX - GET - /movies
 router.get('/', async (req, res) => {
@@ -20,7 +23,6 @@ router.get('/', async (req, res) => {
     res.render('movies/index.ejs', { movies });
   } catch (error) {
     console.log(error);
-
     res.status(500).json({ errMessage: error.message })
   }
 });
@@ -92,6 +94,18 @@ router.post('/', async (req, res) => {
   }
 });
 
+//  CREATE - POST - /movies/movieId/reviews
+router.post('/:movieId/reviews', async (req, res) => {
+  try {
+    req.body.author = req.session.user._id;
+    req.body.movie = req.params.movieId;
+    await Review.create(req.body);
+    res.redirect(`/movies/${req.params.movieId}`);
+  } catch (error) {
+    res.status(500).json({ errMessage: error.message })
+  }
+});
+
 //  EDIT - GET - /movies/:movieId/edit
 router.get('/:movieId/edit', async (req, res) => {
   try {
@@ -120,6 +134,16 @@ router.get('/:movieId', async (req, res) => {
   } catch (error) {
     console.log(error);
 
+    res.status(500).json({ errMessage: error.message })
+  }
+});
+
+//  DELETE - DELETE - /movies/:movieId/reviews/:reviewId
+router.delete('/:movieId/reviews/:reviewId', async (req, res) => {
+  try {
+    await Review.findByIdAndDelete(req.params.reviewId);
+    res.redirect(`/movies/${req.params.movieId}`);
+  } catch (error) {
     res.status(500).json({ errMessage: error.message })
   }
 });

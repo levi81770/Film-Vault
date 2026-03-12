@@ -5,7 +5,7 @@
     <div class="actors-container">
       <% actors.forEach(actor=> { %>
         <div class="actor-card">
-          <img src="<%= actor.image %>" alt="Actor Image" class="actor-image">
+          <img src="<%= actor.photoUrl %>" alt="Actor Image" class="actor-image">
           <a href="/actors/<%= actor._id %>">
             <h2>
               <%= actor.name %>
