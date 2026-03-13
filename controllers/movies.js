@@ -126,11 +126,14 @@ router.get('/:movieId/edit', async (req, res) => {
 //  SHOW - GET - /movies/:movieId
 router.get('/:movieId', async (req, res) => {
   try {
-    const movie = await Movie.findById(req.params.movieId);
-    const addByUser = await User.findById(movie.addedBy);
-    const actor = await Actor.find({ movies: movie._id });
+    const user = await User.findById(req.session.user._id);
+    const movie = await Movie.findById(req.params.movieId)
+      .populate('addedBy')
+      .populate('cast');
+    // const addByUser = await User.findById(movie.addedBy);
+    // const actors = await Actor.find({ movies: movie._id }).populate('movies');
     const reviews = await Review.find({ movie: movie._id }).populate('author');
-    res.render('movies/show.ejs', { movie, addByUser, actor, reviews });
+    res.render('movies/show.ejs', { movie, reviews, user });
   } catch (error) {
     console.log(error);
 

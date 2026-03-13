@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
+const Actor = require('../models/actor');
 const Movie = require('../models/movie');
 const User = require('../models/user');
 
@@ -51,6 +52,7 @@ router.put('/:actorId', async (req, res) => {
       return res.status(401).json({ errMessage: 'You must be signed in to add a movie.' });
     }
     req.body.birthYear = parseInt(req.body.birthYear);
+    req.body.movies = [].concat(req.body.movies || []);
 
     console.log(req.body);
     
@@ -73,6 +75,7 @@ router.post('/', async (req, res) => {
     }
     req.body.addedBy = user._id;
     req.body.birthYear = parseInt(req.body.birthYear);
+    req.body.movies = [].concat(req.body.movies || []);
     const newActor = await Actor.create(req.body);
     res.redirect('/actors');
   } catch (error) {
@@ -97,11 +100,10 @@ router.get('/:actorId/edit', async (req, res) => {
 //  SHOW - GET - /actors/:actorId
 router.get('/:actorId', async (req, res) => {
   try {
-    const actor = await Actor.findById(req.params.actorId);
-    const addByUser = await User.findById(actor.addedBy);
+    const user = await User.findById(req.session.user._id);
+    const actor = await Actor.findById(req.params.actorId).populate('addedBy');
     const movies = await Movie.find({ cast: actor._id });
-    actor.movies = movies;
-    res.render('actors/show.ejs', { actor, addByUser, movies });
+    res.render('actors/show.ejs', { user, actor, movies });
   } catch (error) {
     res.status(500).json({ errMessage: error.message });
   }

@@ -13,25 +13,25 @@
         <%= movie.genre %>
       </p>
       <p><strong>Added By:</strong>
-        <%= addByUser.username %>
+        <%= movie.addedBy.username %>
       </p>
       <p><strong>Cast:</strong>
         <% if (movie.cast.length> 0) { %>
           <ul>
             <% movie.cast.forEach(actor=> { %>
-              <a href="/actors/<%= actor._id %>">
                 <li>
+                  <a href="/actors/<%= actor._id %>">
                   <img src="<%= actor.photoUrl %>" alt="<%= actor.name %>">
                   <%= actor.name %>
+                  </a>
                 </li>
-              </a>
               <% }); %>
           </ul>
           <% } else { %>
             <p>No cast information available.</p>
             <% } %>
       </p>
-      <% if (user) { %>
+      <% if (user._id.toString() === movie.addedBy._id.toString()) { %>
         <form action="/movies/<%= movie._id %>?_method=DELETE" method="POST">
           <button type="submit">Delete Movie</button>
         </form>
@@ -48,9 +48,8 @@
         <% } else { %>
           <p><a href="/auth/login">Log in</a> to add a review.</p>
           <% } %>
-
-            <% if (movie.reviews.length> 0) { %>
-              <% movie.reviews.forEach(review=> { %>
+            <% if (reviews.length> 0) { %>
+              <% reviews.forEach(review=> { %>
                 <div class="review-card">
                   <p><strong>Author:</strong>
                     <%= review.author.username %>
@@ -58,7 +57,7 @@
                   <p><strong>Content:</strong>
                     <%= review.content %>
                   </p>
-                  <% if (user) { %>
+                  <% if (user._id.toString() === review.author._id.toString()) { %>
                    <form action="/movies/<%= movie._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
                      <button type="submit">Delete Review</button>
                    </form>

@@ -10,29 +10,29 @@
         <%= actor.birthYear %>
       </p>
       <p><strong>Added By:</strong>
-        <%= addByUser.username %>
-      </p><strong>Movies:</strong>
-        <% if (actor.movies.length > 0) { %>
-          <ul>
-            <% actor.movies.forEach(movie => { %>
+        <%= actor.addedBy.username %>
+      </p><strong>Movies:</strong></p>
+      <% if (movies.length> 0) { %>
+        <ul>
+          <% movies.forEach(movie=> { %>
+            <li>
               <a href="/movies/<%= movie._id %>">
-                <li>
-                  <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>" class="movie-poster">
-                  <%= movie.title %>
-                </li>
+                <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>" class="movie-poster">
+                <%= movie.title %>
               </a>
-              <% }); %>
-          </ul>
-          <% } else { %>
-            <p>No movies information available.</p>
-            <% } %>
-      </p>
-      <% if (user) { %>
-        <form action="/actors/<%= actor._id %>?_method=DELETE" method="POST">
-          <button type="submit">Delete Actor</button>
-        </form>
-        <a href="/actors/<%= actor._id %>/edit">Edit Actor</a>
-        <% } %>
+            </li>
+            <% }); %>
+        </ul>
+        <% } else { %>
+          <p>No movies information available.</p>
+          <% } %>
+            
+            <% if (user._id.toString() === actor.addedBy._id.toString()) { %>
+              <form action="/actors/<%= actor._id %>?_method=DELETE" method="POST">
+                <button type="submit">Delete Actor</button>
+              </form>
+              <a href="/actors/<%= actor._id %>/edit">Edit Actor</a>
+              <% } %>
     </div>
 
   </body>

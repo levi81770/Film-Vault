@@ -20,7 +20,9 @@ router.get("/:userId/contributions", authRequired, async (req, res) => {
     const user = await User.findById(req.session.user._id);
     const movies = await Movie.find({ addedBy: user._id });
     const actors = await Actor.find({ addedBy: user._id });
-    const reviews = await Review.find({ author: user._id }).populate('movie');
+    const reviews = await Review.find({ author: user._id })
+      .populate('movie')
+      .populate('author');
     res.render("users/contributions", { user, movies, actors, reviews });
   } catch (error) {
 
