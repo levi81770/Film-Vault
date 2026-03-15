@@ -1,10 +1,37 @@
 <%- include('partials/_navbar.ejs', {title: 'Home Page' }) %>
 
-<body>
-  <% if (user) { %>
-    <h1>Welcome to the app, <%= user.username %>!</h1>
-  <% } else { %>
-    <h1>Welcome to the app, guest.</h1>
-  <% } %>
-</body>
-</html>
+  <body>
+    <div class="hero">
+      <h1>Welcome to <span>Film Vault</span></h1>
+      <p>Discover and share movies with a community of film lovers</p>
+      <div class="hero-buttons">
+        <a href="/movies" class="btn-primary">Browse Movies</a>
+        <% if (user) { %>
+          <a href="/movies/new" class="btn-secondary">Add a Movie</a>
+          <% } else { %>
+            <a href="/auth/sign-up" class="btn-secondary">Join Now</a>
+            <% } %>
+      </div>
+    </div>
+
+    <div class="latest-movies">
+      <h2>
+        Latest Movies
+        <a href="/movies" class="see-all">See All →</a>
+      </h2>
+      <div class="movies-container">
+        <% movies.forEach(movie=> { %>
+          <div class="movie-card">
+            <a href="/movies/<%= movie._id %>">
+              <img src="<%= movie.posterUrl || '/images/placeholder.jpg' %>" alt="<%= movie.title %>">
+              <h2>
+                <%= movie.title %>
+              </h2>
+            </a>
+          </div>
+          <% }) %>
+      </div>
+    </div>
+  </body>
+
+  </html>

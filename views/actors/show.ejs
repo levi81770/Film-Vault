@@ -1,40 +1,49 @@
 <%- include('../partials/_navbar.ejs', {title: actor.name }) %>
 
-  <body>
-    <div>
+<body>
+  <div class="actor-show-container">
+    <img src="<%= actor.photoUrl %>" class="actor-photo" alt="<%= actor.name %>">
+
+    <div class="actor-details">
       <h1>
         <%= actor.name %>
       </h1>
-      <img src="<%= actor.photoUrl %>" alt="<%= actor.name %>" class="actor-photo">
       <p><strong>Birth Year:</strong>
         <%= actor.birthYear %>
       </p>
       <p><strong>Added By:</strong>
         <%= actor.addedBy.username %>
-      </p><strong>Movies:</strong></p>
-      <% if (movies.length> 0) { %>
-        <ul>
-          <% movies.forEach(movie=> { %>
-            <li>
-              <a href="/movies/<%= movie._id %>">
-                <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>" class="movie-poster">
-                <%= movie.title %>
-              </a>
-            </li>
-            <% }); %>
-        </ul>
-        <% } else { %>
-          <p>No movies information available.</p>
-          <% } %>
-            
-            <% if (user._id.toString() === actor.addedBy._id.toString()) { %>
-              <form action="/actors/<%= actor._id %>?_method=DELETE" method="POST">
-                <button type="submit">Delete Actor</button>
-              </form>
-              <a href="/actors/<%= actor._id %>/edit">Edit Actor</a>
-              <% } %>
+      </p>
+
+      <% if (user && user._id.toString()===actor.addedBy._id.toString()) { %>
+        <div class="actor-actions">
+          <form action="/actors/<%= actor._id %>?_method=DELETE" method="POST">
+            <button type="submit" class="btn-delete">Delete Actor</button>
+          </form>
+          <a href="/actors/<%= actor._id %>/edit" class="btn-edit">Edit Actor</a>
+        </div>
+        <% } %>
     </div>
+  </div>
 
-  </body>
-
+  <div class="actor-movies">
+    <h2>Movies:</h2>
+    <% if (movies.length> 0) { %>
+      <ul>
+        <% movies.forEach(movie=> { %>
+          <li>
+            <a href="/movies/<%= movie._id %>">
+              <img src="<%= movie.posterUrl || '/images/placeholder.jpg' %>" alt="<%= movie.title %>">
+              <p>
+                <%= movie.title %>
+              </p>
+            </a>
+          </li>
+          <% }); %>
+      </ul>
+      <% } else { %>
+        <p>No movies information available.</p>
+        <% } %>
+  </div>
+</body>
   </html>

@@ -1,12 +1,14 @@
     <%- include('../partials/_navbar.ejs', {title: 'Profile' }) %>
 
 <body>
+  <div class="profile-container">
     <h1>Username: <em><%= user.username %></em></h1>
-    <p><strong>Member Since:</strong> <%= new Date(user.createdAt) %></p>
-    <p>
+    <p><strong>Member Since:</strong> <%= new Date(user.createdAt).toLocaleDateString() %></p>
+    
       <h2>My Contributions:
         <a href="/users/<%= user._id %>/contributions"><small>Click here 👈🏻</small></a>
       </h2>
-    </p>
+    
+  </div>
 </body>
 </html>

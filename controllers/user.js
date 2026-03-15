@@ -25,10 +25,6 @@ router.get("/:userId/contributions", authRequired, async (req, res) => {
       .populate('author');
     res.render("users/contributions", { user, movies, actors, reviews });
   } catch (error) {
-
-    console.log(error.message);
-    
-
     res.status(500).json({ errMessage: error.message })
   }
 });

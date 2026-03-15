@@ -1,53 +1,67 @@
 <%- include('../partials/_navbar.ejs', {title: movie.title }) %>
 
   <body>
-    <div>
-      <h1>
-        <%= movie.title %>
-      </h1>
-      <img src="<%= movie.posterUrl %>" alt="Movie Poster" class="movie-poster">
-      <p><strong>Release Year:</strong>
-        <%= movie.year %>
-      </p>
-      <p><strong>Genre:</strong>
-        <%= movie.genre %>
-      </p>
-      <p><strong>Added By:</strong>
-        <%= movie.addedBy.username %>
-      </p>
-      <p><strong>Cast:</strong>
-        <% if (movie.cast.length> 0) { %>
-          <ul>
-            <% movie.cast.forEach(actor=> { %>
+    <div class="movie-show-container">
+      <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>" class="movie-poster">
+
+
+      <div class="movie-details">
+        <h1>
+          <%= movie.title %>
+        </h1>
+        <p><strong>Release Year:</strong>
+          <%= movie.year %>
+        </p>
+        <p><strong>Genre:</strong>
+          <%= movie.genre %>
+        </p>
+        <p><strong>Added By:</strong>
+          <%= movie.addedBy.username %>
+        </p>
+
+
+        <p><strong>Cast:</strong>
+          <% if (movie.cast.length> 0) { %>
+            <ul class="cast-list">
+              <% movie.cast.forEach(actor=> { %>
                 <li>
                   <a href="/actors/<%= actor._id %>">
-                  <img src="<%= actor.photoUrl %>" alt="<%= actor.name %>">
-                  <%= actor.name %>
+                    <img src="<%= actor.photoUrl %>" alt="<%= actor.name %>">
+                    <%= actor.name %>
                   </a>
                 </li>
-              <% }); %>
-          </ul>
-          <% } else { %>
-            <p>No cast information available.</p>
-            <% } %>
-      </p>
-      <% if (user._id.toString() === movie.addedBy._id.toString()) { %>
-        <form action="/movies/<%= movie._id %>?_method=DELETE" method="POST">
-          <button type="submit">Delete Movie</button>
-        </form>
-        <a href="/movies/<%= movie._id %>/edit">Edit Movie</a>
-        <% } %>
+                <% }); %>
+            </ul>
+            <% } else { %>
+              <p>No cast information available.</p>
+              <% } %>
+        </p>
+
+
+        <% if (user && user._id.toString()===movie.addedBy._id.toString()) { %>
+          <div class="movie-actions">
+            <form action="/movies/<%= movie._id %>?_method=DELETE" method="POST">
+              <button type="submit" class="btn-delete">Delete Movie</button>
+            </form>
+            <a href="/movies/<%= movie._id %>/edit" class="btn-edit">Edit Movie</a>
+          </div>
+          <% } %>
+      </div>
     </div>
-    <div>
+
+
+    <div class="reviews-section">
       <h2>Reviews:</h2>
       <% if (user) { %>
-        <form action="/movies/<%= movie._id %>/reviews" method="POST">
+        <form action="/movies/<%= movie._id %>/reviews" method="POST" class="review-form">
           <textarea name="content" placeholder="Write your review here..." required></textarea>
           <button type="submit">Add Review</button>
         </form>
         <% } else { %>
           <p><a href="/auth/login">Log in</a> to add a review.</p>
           <% } %>
+
+
             <% if (reviews.length> 0) { %>
               <% reviews.forEach(review=> { %>
                 <div class="review-card">
@@ -57,18 +71,16 @@
                   <p><strong>Content:</strong>
                     <%= review.content %>
                   </p>
-                  <% if (user._id.toString() === review.author._id.toString()) { %>
-                   <form action="/movies/<%= movie._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-                     <button type="submit">Delete Review</button>
-                   </form>
-                  <% } %>
+                  <% if (user && user._id.toString()===review.author._id.toString()) { %>
+                    <form action="/movies/<%= movie._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="review-form">
+                      <button type="submit" class="btn-delete">Delete Review</button>
+                    </form>
+                    <% } %>
                 </div>
                 <% }) %>
                   <% } else { %>
                     <p>No reviews yet. Be the first to review this movie!</p>
                     <% } %>
     </div>
-
   </body>
-
   </html>

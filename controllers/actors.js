@@ -51,11 +51,15 @@ router.put('/:actorId', async (req, res) => {
     if (!user) {
       return res.status(401).json({ errMessage: 'You must be signed in to add a movie.' });
     }
+    const actor = await Actor.findById(req.params.actorId);
+    if (!actor) {
+      return res.status(404).json({ errMessage: 'Actor not found.' });
+    }
+    if (actor.addedBy.toString() !== req.session.user._id.toString()) {
+      return res.status(404).json({ errMessage: 'Not authorized' });
+    }
     req.body.birthYear = parseInt(req.body.birthYear);
     req.body.movies = [].concat(req.body.movies || []);
-
-    console.log(req.body);
-    
 
     const updatedActor = await Actor.findByIdAndUpdate(req.params.actorId, req.body, { new: true });
 
@@ -100,7 +104,7 @@ router.get('/:actorId/edit', async (req, res) => {
 //  SHOW - GET - /actors/:actorId
 router.get('/:actorId', async (req, res) => {
   try {
-    const user = await User.findById(req.session.user._id);
+    const user = req.session.user ? await User.findById(req.session.user._id) : null;
     const actor = await Actor.findById(req.params.actorId).populate('addedBy');
     const movies = await Movie.find({ cast: actor._id });
     res.render('actors/show.ejs', { user, actor, movies });

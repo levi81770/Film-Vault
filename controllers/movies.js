@@ -22,7 +22,6 @@ router.get('/', async (req, res) => {
     const movies = await Movie.find({});
     res.render('movies/index.ejs', { movies });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ errMessage: error.message })
   }
 });
@@ -33,8 +32,6 @@ router.get('/new', async (req, res) => {
     const actors = await Actor.find({});
     res.render('movies/new.ejs', { actors });
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({ errMessage: error.message })
   }
 });
@@ -47,12 +44,14 @@ router.delete('/:movieId', async (req, res) => {
       return res.status(401).json({ errMessage: 'You must be signed in to add a movie.' });
     }
 
+    const movie = await Movie.findById(req.params.movieId);
+    if (movie.addedBy.toString() !== req.session.user._id.toString()) {
+      return res.status(404).json({ errMessage: 'Not authorized' });
+    }
     await Movie.findByIdAndDelete(req.params.movieId);
-
+    await Review.deleteMany({ movie: req.params.movieId });
     res.redirect('/movies');
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({ errMessage: error.message })
   }
 })
@@ -64,13 +63,18 @@ router.put('/:movieId', async (req, res) => {
     if (!user) {
       return res.status(401).json({ errMessage: 'You must be signed in to add a movie.' });
     }
+
+    const movie = await Movie.findById(req.params.movieId);
+    if (movie.addedBy.toString() !== req.session.user._id.toString()) {
+      return res.status(404).json({ errMessage: 'Not authorized' });
+    }
+
     req.body.year = parseInt(req.body.year);
     req.body.cast = [].concat(req.body.cast || []);
+
     const updatedMovie = await Movie.findByIdAndUpdate(req.params.movieId, req.body, { new: true });
     res.redirect(`/movies/${updatedMovie._id}`);
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({ errMessage: error.message })
   }
 });
@@ -88,8 +92,6 @@ router.post('/', async (req, res) => {
     const newMovie = await Movie.create(req.body);
     res.redirect(`/movies/${newMovie._id}`);
   } catch (error) {
-    console.log(error);
-    
     res.status(500).json({ errMessage: error.message })
   }
 });
@@ -117,8 +119,6 @@ router.get('/:movieId/edit', async (req, res) => {
     const actors = await Actor.find({});
     res.render('movies/edit.ejs', { movie, actors });
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({ errMessage: error.message })    
   }
 });
@@ -126,17 +126,13 @@ router.get('/:movieId/edit', async (req, res) => {
 //  SHOW - GET - /movies/:movieId
 router.get('/:movieId', async (req, res) => {
   try {
-    const user = await User.findById(req.session.user._id);
+    const user = req.session.user ? await User.findById(req.session.user._id) : null;
     const movie = await Movie.findById(req.params.movieId)
       .populate('addedBy')
       .populate('cast');
-    // const addByUser = await User.findById(movie.addedBy);
-    // const actors = await Actor.find({ movies: movie._id }).populate('movies');
     const reviews = await Review.find({ movie: movie._id }).populate('author');
     res.render('movies/show.ejs', { movie, reviews, user });
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({ errMessage: error.message })
   }
 });
@@ -144,7 +140,10 @@ router.get('/:movieId', async (req, res) => {
 //  DELETE - DELETE - /movies/:movieId/reviews/:reviewId
 router.delete('/:movieId/reviews/:reviewId', async (req, res) => {
   try {
-    await Review.findByIdAndDelete(req.params.reviewId);
+    const review = await Review.findByIdAndDelete(req.params.reviewId);
+    if (review && review.author.toString() !== req.session.user._id.toString()) {
+      return res.status(404).json({ errMessage: 'Review not found.' });
+    }
     res.redirect(`/movies/${req.params.movieId}`);
   } catch (error) {
     res.status(500).json({ errMessage: error.message })

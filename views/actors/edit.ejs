@@ -1,22 +1,24 @@
 <%- include('../partials/_navbar.ejs', {title: 'Edit Actor' }) %>
 
   <body>
-    <h1>Edit Actor</h1>
-    <form action="/actors/<%= actor._id %>?_method=PUT" method="POST">
-      <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required value="<%= actor.name %>">
-      </div>
-      <div>
-        <label for="birthYear">Birth Year:</label>
-        <input type="number" id="birthYear" name="birthYear" required value="<%= actor.birthYear %>">
-      </div>
-      <div>
-        <label for="photoUrl">Image URL:</label>
-        <input type="url" id="photoUrl" name="photoUrl" value="<%= actor.photoUrl %>">
-      </div>
-      <input type="submit" value="Update Actor">
-    </form>
+    <div class="form-container">
+      <h1>Edit Actor</h1>
+      <form action="/actors/<%= actor._id %>?_method=PUT" method="POST">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required value="<%= actor.name %>">
+        </div>
+        <div class="form-group">
+          <label for="birthYear">Birth Year:</label>
+          <input type="number" id="birthYear" name="birthYear" required value="<%= actor.birthYear %>">
+        </div>
+        <div class="form-group">
+          <label for="photoUrl">Image URL:</label>
+          <input type="url" id="photoUrl" name="photoUrl" value="<%= actor.photoUrl %>">
+        </div>
+        <input type="submit" value="Update Actor" class="btn-submit">
+      </form>
+    </div>
   </body>
 
   </html>

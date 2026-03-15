@@ -1,64 +1,70 @@
 <%- include('../partials/_navbar.ejs', {title: 'Contributions' }) %>
 
   <body>
-    <h1>My Contributions</h1>
+    <div class="contributions-container">
+      <h1>My Contributions</h1>
 
-    <h2>Movies I've Added:</h2>
-    <% if (movies.length> 0) { %>
-      <div class="movies-container">
-        <% movies.forEach(movie=> { %>
-          <div class="movie-card">
-            <img src="<%= movie.posterUrl %>" alt="Movie Poster" class="movie-poster">
+      <h2>Movies I've Added:</h2>
+      <% if (movies.length> 0) { %>
+        <div class="movies-container">
+          <% movies.forEach(movie=> { %>
+            <div class="movie-card">
+              <a href="/movies/<%= movie._id %>">
+                <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>" class="movie-poster">
 
-            <a href="/movies/<%= movie._id %>">
-              <h4>
-                <%= movie.title %>
-              </h4>
-            </a>
 
-          </div>
-          <% }) %>
-      </div>
-      <% } else { %>
-        <p>You haven't added any movies yet.</p>
-        <% } %>
+                <h4>
+                  <%= movie.title %>
+                </h4>
+              </a>
 
-          <h2>Actors I've Added:</h2>
-          <% if (actors.length> 0) { %>
-            <div class="actors-container">
-              <% actors.forEach(actor=> { %>
-                <div class="actor-card">
-                  <img src="<%= actor.photoUrl %>" alt="Actor Image" class="actor-image">
-                  <a href="/actors/<%= actor._id %>">
-                    <h4>
-                      <%= actor.name %>
-                    </h4>
-                  </a>
-                </div>
-                <% }) %>
             </div>
-            <% } else { %>
-              <p>You haven't added any actors yet.</p>
-              <% } %>
-                <h2>Reviews I've Added:</h2>
-                <% if (reviews.length> 0) { %>
-                  <div class="reviews-container">
-                    <% reviews.forEach(review=> { %>
-                      <div class="review-card">
-                        <p><strong>To the movie:</strong>
-                          <a href="/movies/<%= review.movie._id %>">
-                            <%= review.movie.title %>
-                          </a>
-                        </p>
-                        <p>
-                          <%= review.content %>
-                        </p>
-                      </div>
-                      <% }) %>
+            <% }) %>
+        </div>
+        <% } else { %>
+          <p>You haven't added any movies yet.</p>
+          <% } %>
+
+            <h2>Actors I've Added:</h2>
+            <% if (actors.length> 0) { %>
+              <div class="actors-container">
+                <% actors.forEach(actor=> { %>
+                  <div class="actor-card">
+                    <a href="/actors/<%= actor._id %>">
+                      <img src="<%= actor.photoUrl %>" alt="<%= actor.name %>" class="actor-image">
+                      <h4>
+                        <%= actor.name %>
+                      </h4>
+                    </a>
                   </div>
-                  <% } else { %>
-                    <p>You haven't added any reviews yet.</p>
-                    <% } %>
+                  <% }) %>
+              </div>
+              <% } else { %>
+                <p>You haven't added any actors yet.</p>
+                <% } %>
+                  <h2>Reviews I've Added:</h2>
+                  <% if (reviews.length> 0) { %>
+                    <div class="reviews-container">
+                      <% reviews.forEach(review=> { %>
+                        <div class="review-card">
+                          <% if (review.movie) { %>
+                            <p><strong>To the movie:</strong>
+                              <a href="/movies/<%= review.movie._id %>">
+                                <%= review.movie.title %>
+                              </a>
+                            </p>
+                            <p>
+                              <%= review.content %>
+                            </p>
+                        </div>
+                        <% } %>
+
+                          <% }) %>
+                    </div>
+                    <% } else { %>
+                      <p>You haven't added any reviews yet.</p>
+                      <% } %>
+    </div>
   </body>
 
   </html>

@@ -12,12 +12,17 @@ const path = require('path');
 const authRequired = require('./middleware/isUserAuthorized')
 const passDataToView = require('./middleware/passDataToView')
 
+const Movie = require('./models/movie');
+const Actor = require('./models/actor');
+const Review = require('./models/review');
+const User = require('./models/user');
+
+
 
 const authController = require('./controllers/auth.js');
 const moviesController = require('./controllers/movies.js');
 const actorsController = require('./controllers/actors.js');
 const userController = require('./controllers/user.js');
-const reviewsController = require('./controllers/reviews.js');
 
 const port = process.env.PORT ? process.env.PORT : '3000';
 
@@ -25,8 +30,7 @@ const port = process.env.PORT ? process.env.PORT : '3000';
 require('./db/connection')
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
-// app.use(morgan('dev'));
-app.set('view engine', 'ejs') // When this is present we dont need .ejs in our res.renders
+app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
@@ -42,16 +46,21 @@ app.use(
 
 app.use(passDataToView);
 
-app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    user: req.session.user,
-  });
+app.get('/', async (req, res) => {
+  try {
+    const movies = await Movie.find({}).sort({ _id: -1 }).limit(6);
+    res.render('index.ejs', {
+      user: req.session.user,
+      movies
+    });
+  } catch (error) {
+    res.status(500).json({ errMessage: error.message })
+  }
 });
 
 app.use('/auth', authController);
 app.use('/movies', moviesController);
 app.use('/actors', actorsController);
-app.use('/reviews', reviewsController);
 
 // Any routes defined under this middleware require auth
 app.use(authRequired)
