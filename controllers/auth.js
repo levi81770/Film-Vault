@@ -5,11 +5,11 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user.js');
 
 router.get('/sign-up', (req, res) => {
-  res.render('auth/sign-up.ejs');
+  res.render('auth/sign-up.ejs', { message: "" });
 });
 
 router.get('/sign-in', (req, res) => {
-  res.render('auth/sign-in.ejs');
+  res.render('auth/sign-in.ejs', { message: "" });
 });
 
 router.get('/sign-out', (req, res) => {
@@ -22,13 +22,12 @@ router.post('/sign-up', async (req, res) => {
     // Check if the username is already taken
     const userInDatabase = await User.findOne({ username: req.body.username });
     if (userInDatabase) {
-      return res.send('Username already taken.');
-    }
+      throw new Error(`User with username ${req.body.username} already exist.`)    }
   
     // Username is not taken already!
     // Check if the password and confirm password match
     if (req.body.password !== req.body.confirmPassword) {
-      return res.send('Password and Confirm Password must match');
+      throw new Error("Password and confirm password do not match")
     }
   
     // Must hash the password before sending to the database
@@ -38,10 +37,9 @@ router.post('/sign-up', async (req, res) => {
     // All ready to create the new user!
     await User.create(req.body);
   
-    res.redirect('/auth/sign-in');
-  } catch (error) {
-    console.log(error);
     res.redirect('/');
+  } catch (error) {
+    res.render('auth/sign-up.ejs', { message: error.message });
   }
 });
 
@@ -50,7 +48,7 @@ router.post('/sign-in', async (req, res) => {
     // First, get the user from the database
     const userInDatabase = await User.findOne({ username: req.body.username });
     if (!userInDatabase) {
-      return res.send('Login failed. Please try again.');
+      throw new Error(`User with username ${req.body.username} does not exist. Please sign up.`)
     }
   
     // There is a user! Time to test their password with bcrypt
@@ -59,7 +57,7 @@ router.post('/sign-in', async (req, res) => {
       userInDatabase.password
     );
     if (!validPassword) {
-      return res.send('Login failed. Please try again.');
+      throw new Error("Password Incorrect, please try again")
     }
   
     // There is a user AND they had the correct password. Time to make a session!
@@ -72,8 +70,7 @@ router.post('/sign-in', async (req, res) => {
   
     res.redirect('/');
   } catch (error) {
-    console.log(error);
-    res.redirect('/');
+    res.render('auth/sign-in.ejs', { message: error.message });
   }
 });
 
